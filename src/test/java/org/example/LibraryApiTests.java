@@ -44,7 +44,7 @@ public class LibraryApiTests {
     @Test
     public void test_To_Verify_Availability_Of_Book() {
         ArrayList arrayList = libraryApi.bookAvailability("Little Blue Truck");
-        Assert.assertFalse(arrayList.get(0).equals(0), "Books not available");
+        Assert.assertNotEquals(arrayList.get(0), 0, "Books not available");
     }
 
     @Test
