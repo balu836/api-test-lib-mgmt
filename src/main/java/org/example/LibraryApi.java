@@ -22,7 +22,7 @@ public class LibraryApi {
 
 
     public LibraryApi() throws IOException {
-        Properties properties = new PropReader().get();
+        Properties properties = PropReader.get();
         baseURI = properties.getProperty("url");
         userID = properties.getProperty("userID");
         password = properties.getProperty("password");
