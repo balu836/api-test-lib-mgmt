@@ -10,7 +10,7 @@ import org.testng.Assert;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MyStepdefs {
+public class LibMgmtApiStepdefs {
     private static LibraryApi libraryApi;
 
     @Given("Login Library Management API")
