@@ -16,13 +16,16 @@ public class LibraryApi {
     private static String authToken;
     private static LibraryApi apiUtil;
     private static String baseURI;
-    private static Properties properties;
     private static RequestSpecification requestSpecification;
+    private static String userID;
+    private static String password;
 
 
     public LibraryApi() throws IOException {
-        properties = new PropReader().get();
+        Properties properties = new PropReader().get();
         baseURI = properties.getProperty("url");
+        userID = properties.getProperty("userID");
+        password = properties.getProperty("password");
         requestSpecification = given().relaxedHTTPSValidation().contentType("application/json");
         authToken = getAuthToken();
 
@@ -30,6 +33,7 @@ public class LibraryApi {
 
     /**
      * Singleton object to get the Librarry instance
+     *
      * @return
      * @throws IOException
      */
@@ -43,6 +47,7 @@ public class LibraryApi {
 
     /**
      * Send payload and get the responce
+     *
      * @param endPoint
      * @param payLoad
      * @return
@@ -55,6 +60,7 @@ public class LibraryApi {
 
     /**
      * Method to generate the Authentication token
+     *
      * @return
      */
     private static String getAuthToken() {
@@ -62,8 +68,8 @@ public class LibraryApi {
                 "  \"username\": \"{{USERID}}\",\n" +
                 "  \"password\": \"{{PASSWORD}}\"\n" +
                 "}";
-        userPayload = userPayload.replace("{{USERID}}", properties.getProperty("userID"))
-                .replace("{{PASSWORD}}", properties.getProperty("password"));
+        userPayload = userPayload.replace("{{USERID}}", userID)
+                .replace("{{PASSWORD}}", password);
         if (authToken == null) {
             Response response = postURL("member/login", userPayload);
             return response.jsonPath().getJsonObject("token");
@@ -73,6 +79,7 @@ public class LibraryApi {
 
     /**
      * Method to get the response to borrow the book
+     *
      * @param bookTitle title of the book
      * @return response
      */
@@ -82,7 +89,7 @@ public class LibraryApi {
                 "  \"username\": \"{{USERID}}\"\n" +
                 "}";
         bookBorrowPayload = bookBorrowPayload.replace("{{BOOK_TITLE}}", bookTitle)
-                .replace("{{USERID}}", properties.getProperty("userID"));
+                .replace("{{USERID}}", userID);
         return requestSpecification.auth().oauth2(authToken)
                 .body(bookBorrowPayload)
                 .when()
@@ -90,7 +97,6 @@ public class LibraryApi {
     }
 
     /**
-     *
      * @param bookTitle title of the book
      * @return returning the available count
      */
@@ -102,6 +108,7 @@ public class LibraryApi {
 
     /**
      * Method to get the response to returned the book
+     *
      * @param bookTitle title of the book
      * @return response
      */
@@ -111,8 +118,7 @@ public class LibraryApi {
                 "  \"username\": \"{{USERID}}\"\n" +
                 "}";
         bookReturnPayload = bookReturnPayload.replace("{{BOOK_TITLE}}", bookTitle)
-                .replace("{{USERID}}", properties.getProperty("userID"));
-        ;
+                .replace("{{USERID}}", userID);
         return requestSpecification.auth()
                 .oauth2(authToken)
                 .body(bookReturnPayload)
