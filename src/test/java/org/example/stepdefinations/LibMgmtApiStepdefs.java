@@ -18,8 +18,6 @@ public class LibMgmtApiStepdefs {
     public void loginLibraryManagementAPI() throws IOException {
         libraryApi = LibraryApi.get();
         authToken = LibraryApi.getAuthToken();
-
-
     }
 
     @Given("Check the Book {string} availability in the Library")
