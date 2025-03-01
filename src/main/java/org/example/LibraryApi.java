@@ -3,17 +3,18 @@ package org.example;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
+import static java.lang.ClassLoader.getSystemResource;
+import static org.example.FileUtils.readFile;
 
 /**
  * This is the class to read the Library API details
  */
 public class LibraryApi {
-    private static String authToken;
     private static LibraryApi apiUtil;
     private static String baseURI;
     private static RequestSpecification requestSpecification;
@@ -27,15 +28,13 @@ public class LibraryApi {
         userID = properties.getProperty("userID");
         password = properties.getProperty("password");
         requestSpecification = given().relaxedHTTPSValidation().contentType("application/json");
-        authToken = getAuthToken();
 
     }
 
     /**
-     * Singleton object to get the Librarry instance
+     * Singleton object to get the Library API instance
      *
-     * @return
-     * @throws IOException
+     * @return library api instance
      */
     public static LibraryApi get() throws IOException {
         if (apiUtil == null) {
@@ -48,8 +47,8 @@ public class LibraryApi {
     /**
      * Send payload and get the responce
      *
-     * @param endPoint
-     * @param payLoad
+     * @param endPoint endpoint of the URI
+     * @param payLoad payload for the request
      * @return
      */
     private static Response postURL(String endPoint, String payLoad) {
@@ -59,41 +58,42 @@ public class LibraryApi {
     }
 
     /**
+     * @param endPoint endpoint of the URI
+     * @param payLoad payload for the request
+     * @param authToken authentication token for the request
+     * @return returned the response of the request
+     */
+    private static Response postURL(String endPoint, String payLoad, String authToken) {
+        return requestSpecification.auth().oauth2(authToken)
+                .body(payLoad)
+                .when()
+                .post(baseURI + endPoint);
+    }
+
+    /**
      * Method to generate the Authentication token
      *
-     * @return
+     * @return Return authentication token
      */
-    private static String getAuthToken() {
-        String userPayload = "{\n" +
-                "  \"username\": \"{{USERID}}\",\n" +
-                "  \"password\": \"{{PASSWORD}}\"\n" +
-                "}";
+    public static String getAuthToken() {
+        String userPayload = readFile(getSystemResource("payload/user.json").getFile());
         userPayload = userPayload.replace("{{USERID}}", userID)
                 .replace("{{PASSWORD}}", password);
-        if (authToken == null) {
-            Response response = postURL("member/login", userPayload);
-            return response.jsonPath().getJsonObject("token");
-        }
-        return authToken;
+        Response response = postURL("member/login", userPayload);
+        return response.jsonPath().getJsonObject("token");
     }
 
     /**
      * Method to get the response to borrow the book
      *
      * @param bookTitle title of the book
-     * @return response
+     * @return response returned the borrowed book payload response
      */
-    public Response bookBorrowed(String bookTitle) {
-        String bookBorrowPayload = "{\n" +
-                "  \"title\": \"{{BOOK_TITLE}}\",\n" +
-                "  \"username\": \"{{USERID}}\"\n" +
-                "}";
+    public Response bookBorrowed(String bookTitle, String authToken) {
+        String bookBorrowPayload = readFile(getSystemResource("payload/book-borrowed.json").getFile());
         bookBorrowPayload = bookBorrowPayload.replace("{{BOOK_TITLE}}", bookTitle)
                 .replace("{{USERID}}", userID);
-        return requestSpecification.auth().oauth2(authToken)
-                .body(bookBorrowPayload)
-                .when()
-                .post(baseURI + "transactions/borrow");
+        return postURL("transactions/borrow", bookBorrowPayload, authToken);
     }
 
     /**
@@ -110,24 +110,19 @@ public class LibraryApi {
      * Method to get the response to returned the book
      *
      * @param bookTitle title of the book
-     * @return response
+     * @return response returned the returned book payload response
      */
-    public Response bookReturned(String bookTitle) {
-        String bookReturnPayload = "{\n" +
-                "  \"title\": \"{{BOOK_TITLE}}\",\n" +
-                "  \"username\": \"{{USERID}}\"\n" +
-                "}";
+    public Response bookReturned(String bookTitle, String authToken) {
+        String bookReturnPayload = readFile(getSystemResource("payload/book-returned.json").getFile());
         bookReturnPayload = bookReturnPayload.replace("{{BOOK_TITLE}}", bookTitle)
                 .replace("{{USERID}}", userID);
-        return requestSpecification.auth()
-                .oauth2(authToken)
-                .body(bookReturnPayload)
-                .when()
-                .post(baseURI + "transactions/return");
+        return postURL("transactions/return", bookReturnPayload, authToken);
     }
 
 
 }
+
+
 
 
 

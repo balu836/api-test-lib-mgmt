@@ -12,11 +12,12 @@ import java.util.ArrayList;
 
 public class LibMgmtApiStepdefs {
     private static LibraryApi libraryApi;
+    private static String authToken;
 
     @Given("Login Library Management API")
     public void loginLibraryManagementAPI() throws IOException {
         libraryApi = LibraryApi.get();
-
+        authToken = LibraryApi.getAuthToken();
     }
 
     @Given("Check the Book {string} availability in the Library")
@@ -25,15 +26,16 @@ public class LibMgmtApiStepdefs {
         Assert.assertNotEquals(arrayList.get(0), 0, "Books not available");
     }
 
-    @When("Borrow the Book  {string} availability from the Library")
-    public void borrowTheBookAvailabilityFromTheLibrary(String bookName) {
-        Response response = libraryApi.bookBorrowed(bookName);
+    @When("Borrow the Book  {string} from the Library")
+    public void borrowTheBookFromTheLibrary(String bookName) {
+                Response response = libraryApi.bookBorrowed(bookName, authToken);
         Assert.assertEquals(response.statusCode(), 201, "Book not available to borrow");
+
     }
 
-    @Then("Return the Book {string} availability to the Library")
-    public void returnTheBookAvailabilityToTheLibrary(String bookName) {
-       Response response = libraryApi.bookReturned(bookName);
+    @Then("Return the Book {string} to the Library")
+    public void returnTheBookToTheLibrary(String bookName) {
+                Response response = libraryApi.bookReturned(bookName, authToken);
         Assert.assertEquals(response.statusCode(), 200);
 
     }
