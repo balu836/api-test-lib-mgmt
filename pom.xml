@@ -17,6 +17,8 @@
         <jackson.version>2.18.2</jackson.version>
         <testng.version>7.11.0</testng.version>
         <cucumber.version>7.21.1</cucumber.version>
+        <maven.site.version>3.9.1</maven.site.version>
+        <maven-compiler.version>3.12.1</maven-compiler.version>
     </properties>
 
     <dependencies>
@@ -42,4 +44,17 @@
             <version>${cucumber.version}</version>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven.site.version}</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>

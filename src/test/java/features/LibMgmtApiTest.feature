@@ -6,8 +6,8 @@ Feature: Library management api tests
 
   Scenario Outline: Test To check the Book availability, Borrow and Return to the Library Transaction
     Given Check the Book "<BookTitle>" availability in the Library
-    When Borrow the Book  "<BookTitle>" availability from the Library
-    Then Return the Book "<BookTitle>" availability to the Library
+    When Borrow the Book  "<BookTitle>" from the Library
+    Then Return the Book "<BookTitle>" to the Library
 
     Examples:
       | BookTitle            |

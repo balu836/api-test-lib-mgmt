@@ -27,7 +27,6 @@ public class LibraryApi {
         userID = properties.getProperty("userID");
         password = properties.getProperty("password");
         requestSpecification = given().relaxedHTTPSValidation().contentType("application/json");
-        authToken = getAuthToken();
 
     }
 
@@ -63,7 +62,7 @@ public class LibraryApi {
      *
      * @return
      */
-    private static String getAuthToken() {
+    public static String getAuthToken() {
         String userPayload = "{\n" +
                 "  \"username\": \"{{USERID}}\",\n" +
                 "  \"password\": \"{{PASSWORD}}\"\n" +
@@ -83,7 +82,7 @@ public class LibraryApi {
      * @param bookTitle title of the book
      * @return response
      */
-    public Response bookBorrowed(String bookTitle) {
+    public Response bookBorrowed(String bookTitle,String authToken) {
         String bookBorrowPayload = "{\n" +
                 "  \"title\": \"{{BOOK_TITLE}}\",\n" +
                 "  \"username\": \"{{USERID}}\"\n" +
@@ -112,7 +111,7 @@ public class LibraryApi {
      * @param bookTitle title of the book
      * @return response
      */
-    public Response bookReturned(String bookTitle) {
+    public Response bookReturned(String bookTitle,String authToken) {
         String bookReturnPayload = "{\n" +
                 "  \"title\": \"{{BOOK_TITLE}}\",\n" +
                 "  \"username\": \"{{USERID}}\"\n" +
