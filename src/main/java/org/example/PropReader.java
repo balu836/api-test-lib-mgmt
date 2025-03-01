@@ -17,6 +17,9 @@ public class PropReader {
         properties.load(Files.newInputStream(Paths.get(ClassLoader.getSystemResource("app.properties").getFile())));
     }
 
+    /**
+     * @return returned the properties instanse
+     */
     public static Properties get() throws IOException {
         if (properties == null) {
             propReader = new PropReader();
