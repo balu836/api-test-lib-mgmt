@@ -1,6 +1,6 @@
 ### Library management API Test
 In this project have used Library management API URL(**https://librarymanagementapisystem.onrender.com/**) to automate the functionalities,
-have automated the API tests using **Cucumber** with **TestNG** framework
+have automated the API tests using **Cucumber** with **TestNG** framework and **RestAssured** Library
 #### Requirements
 - Java 21 
 - Maven 3.9.8
