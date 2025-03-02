@@ -39,10 +39,4 @@ public class LibMgmtApiStepdefs {
         Assert.assertEquals(response.statusCode(), 200);
 
     }
-
-    @Then("abc sdfsdf")
-    public void abc_sdfsdf() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
-    }
 }
