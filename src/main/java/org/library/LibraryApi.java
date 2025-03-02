@@ -1,4 +1,4 @@
-package org.example;
+package org.library;
 
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -9,7 +9,6 @@ import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
 import static java.lang.ClassLoader.getSystemResource;
-import static org.example.FileUtils.readFile;
 
 /**
  * This is the class to read the Library API details
@@ -76,7 +75,7 @@ public class LibraryApi {
      * @return Return authentication token
      */
     public static String getAuthToken() {
-        String userPayload = readFile(getSystemResource("payload/user.json").getFile());
+        String userPayload = FileUtils.readFile(getSystemResource("payload/user.json").getFile());
         userPayload = userPayload.replace("{{USERID}}", userID)
                 .replace("{{PASSWORD}}", password);
         Response response = postURL("member/login", userPayload);
@@ -90,7 +89,7 @@ public class LibraryApi {
      * @return response returned the borrowed book payload response
      */
     public Response bookBorrowed(String bookTitle, String authToken) {
-        String bookBorrowPayload = readFile(getSystemResource("payload/book-borrowed.json").getFile());
+        String bookBorrowPayload = FileUtils.readFile(getSystemResource("payload/book-borrowed.json").getFile());
         bookBorrowPayload = bookBorrowPayload.replace("{{BOOK_TITLE}}", bookTitle)
                 .replace("{{USERID}}", userID);
         return postURL("transactions/borrow", bookBorrowPayload, authToken);
@@ -113,7 +112,7 @@ public class LibraryApi {
      * @return response returned the returned book payload response
      */
     public Response bookReturned(String bookTitle, String authToken) {
-        String bookReturnPayload = readFile(getSystemResource("payload/book-returned.json").getFile());
+        String bookReturnPayload = FileUtils.readFile(getSystemResource("payload/book-returned.json").getFile());
         bookReturnPayload = bookReturnPayload.replace("{{BOOK_TITLE}}", bookTitle)
                 .replace("{{USERID}}", userID);
         return postURL("transactions/return", bookReturnPayload, authToken);

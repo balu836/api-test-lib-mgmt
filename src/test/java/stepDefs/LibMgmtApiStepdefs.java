@@ -1,10 +1,10 @@
-package org.example.stepdefinations;
+package stepDefs;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.response.Response;
-import org.example.LibraryApi;
+import org.library.LibraryApi;
 import org.testng.Assert;
 
 import java.io.IOException;
@@ -38,5 +38,11 @@ public class LibMgmtApiStepdefs {
                 Response response = libraryApi.bookReturned(bookName, authToken);
         Assert.assertEquals(response.statusCode(), 200);
 
+    }
+
+    @Then("abc sdfsdf")
+    public void abc_sdfsdf() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
     }
 }

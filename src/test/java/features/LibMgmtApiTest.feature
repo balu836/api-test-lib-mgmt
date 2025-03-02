@@ -10,6 +10,7 @@ Feature: Library management api tests
     Then Return the Book "<BookTitle>" to the Library
 
     Examples:
-      | BookTitle            |
-      | The Very Busy Spider |
-      | Little Blue Truck    |
+      | BookTitle              |
+      | The Very Busy Spider   |
+      | Little Blue Truck      |
+      | Little Blue Truck      |
