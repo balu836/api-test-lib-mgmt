@@ -21,7 +21,7 @@ public class LibraryApi {
     private static String password;
 
 
-    public LibraryApi() throws IOException {
+    private LibraryApi() throws IOException {
         Properties properties = PropReader.get();
         baseURI = properties.getProperty("url");
         userID = properties.getProperty("userID");
