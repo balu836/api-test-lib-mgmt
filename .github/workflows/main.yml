@@ -2,7 +2,7 @@ name: run-tests
 on:
   push:
     branches:
-      -lib-api-tests-testng
+      -main
 jobs:
   build:
     name: run-api-tests
