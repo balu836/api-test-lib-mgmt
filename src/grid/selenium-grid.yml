@@ -1,0 +1,70 @@
+version: "3"
+
+services:
+
+  selenium-grid-hub:
+    image: selenium/hub:4.0.0-beta-1-20210215
+    container_name: selenium-grid-hub
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/bin/check-grid.sh --host 0.0.0.0 --port 4444"]
+      interval: 60s
+      timeout: 90s
+      retries: 5
+    environment:
+      - GRID_TIMEOUT=500
+      - GRID_BROWSER_TIMEOUT=0
+      - GRID_MAX_SESSION=20
+    ports:
+      - "4444:4444"
+
+  selenium-firefox-node:
+    image: selenium/node-firefox:85.0.2
+    container_name: selenium-firefox-node
+    volumes:
+      - /dev/shm:/dev/shm
+      - /selenium-shared/pdf-downloads:/tmp/pdf-downloads/
+      - /selenium-shared/pdf-uploads:/tmp/referral-packages
+    depends_on:
+      - selenium-grid-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-grid-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_CONCURRENT_SESSIONS=10
+    shm_size: '8gb'
+
+  selenium-chrome-node:
+    image: selenium/node-chrome:4.0.0
+    container_name: selenium-chrome-node
+    volumes:
+      - /dev/shm:/dev/shm
+      - /selenium-shared/pdf-downloads:/tmp/pdf-downloads/
+      - /selenium-shared/pdf-uploads:/tmp/referral-packages
+    depends_on:
+      - selenium-grid-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-grid-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_MAX_CONCURRENT_SESSIONS=10
+    shm_size: '8gb'
+
+  nginx:
+    image: bitnami/nginx:1.16
+    container_name: grid-nginx
+    ports:
+      - "80:8080"
+    volumes:
+      - /selenium-shared/pdf-downloads:/app
+    depends_on:
+      - selenium-grid-hub
+      - selenium-firefox-node
+      - selenium-chrome-node
+
+  file-upload-server:
+    build: file-upload
+    container_name: file-upload-server
+    ports:
+      - 3000:3000
+    volumes:
+      - /selenium-shared/pdf-uploads:/usr/src/app/uploads
